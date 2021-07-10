@@ -1,0 +1,34 @@
+options:
+    msgbvn: Bienvenue %{bvn.LastNewPlayer}% !
+
+command /bvn:
+    trigger:
+        if {bvn.%player%.%{bvn.LastNewPlayer}%} is true:
+            send "&cErreur: Tu à déjà souhaiter la bienvenue a %{bvn.LastNewPlayer}% !"
+        else:
+            if {bvn.LastNewPlayer} is false:
+                send "&cErreur: Il n'y a aucun nouveau joueur !"
+            else if {bvn.LastNewPlayer} is not false:
+                make player say "{@msgbvn}"
+                set {bvn.%player%.%{bvn.LastNewPlayer}%} to true
+
+command /setnewplayers [<player>]:
+    permission: tgbhy.setnewplayers
+    permission message: &cErreur: Vous n'avez pas la permission d'éxécuter cette commande !
+    trigger:
+        if args 1 is set:
+            if args 1 is a player:
+                set {bvn.LastNewPlayer} to args 1
+                send "%{bvn.LastNewPlayer}% est maintenant un nouveau joueur !"
+                wait 20 second
+                set {bvn.LastNewPlayer} to false
+            else:   
+                send "&cErreur: Le joueur n'éxiste pas !"
+        else:
+            send "&cErreur: Aucun joueur n'à été mis !"
+
+on first join:
+    set {bvn.LastNewPlayer} to player
+    wait 20 second
+    set {bvn.LastNewPlayer} to false
+    loop all players in world "world":
