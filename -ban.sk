@@ -1,0 +1,7 @@
+command /ban <player> [<reason>]:
+    permission Admin
+    permission {ban.player}
+    executable by: console and player
+    trigger:
+        ban args 1 beacause args 2
+        message "%args 1% à été banni pour %args 2%"

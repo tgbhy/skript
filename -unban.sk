@@ -1,0 +1,6 @@
+command /ban <player> [reason] :
+    permission: Admin
+    permission message: &cTu n'a pas la permission d'éxécuter cette commande !
+    executable by: console and players
+    trigger:
+        ban %player% [(by reason)] 

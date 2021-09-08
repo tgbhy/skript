@@ -1,0 +1,63 @@
+command /gm <text> <player>:
+    description: Cette commande permet de changer son mode de jeu
+    permission: Admin
+    permission message: &cTu n'a pas la permission d'éxécuter cette commande.
+    description: permet de changer son mode de jeu
+    aliases: /gamemode
+    trigger:
+        if args 1 is "1":
+            set player's game mode to creative
+            message "Changement de ton mode de jeu a créatif"
+        if args 1 is "0":
+            set player's game mode to survival
+            message "Changement de ton mode de jeu a survie"
+        if args 1 is "2":
+            set player's game mode to adventure
+            message "Changement de ton mode de jeu a aventure"
+        if args 1 is "3":
+            if args 2 is not set:
+                set player's game mode to spectator
+                message "Changement de ton mode de jeu a spectateur"
+            else:
+                set args 2's game mode to spectator
+        if args 1 is not "0" or "1" or "2" or "3":
+            message "&cMerci de me!ttre un argument valide.(0,1,2 ou 3)"
+
+command /gmc <player>:
+    permission: Admin
+    permission: gamemode.tgbhy
+    description: permet de modifier son mode de jeu a créatif
+    trigger:
+        if args 1 is not set:
+            set player's game mode to creative
+            message "Changement de ton mode de jeu à créatif"
+        if args 1 is set:
+            set args'1 game mode to creative
+            message "Changement du mode de jeu de %args 1% à créatif"
+
+command /gma:
+    permission: Admin
+    permission: gamemode.tgbhy
+    permission message: &cTu n'a pas la permission d'éxécuter cette commande !
+    description: permet de changer son mode de jeu a aventure
+    trigger:
+        set player's game mode to adventure
+        message "Changement de ton mode de jeu à aventure"
+
+command /gms:
+    permission: Admin
+    permission: gamemode.tgbhy
+    permission message: &cTu n'a pas la permission d'éxécuter cette commande !
+    description: permet de changer son mode de jeu à survie
+    trigger:
+        set player's game mode to survival
+        message "Changement de ton mode de jeu à créatif"
+
+command /gmsp:
+    permission: Admin
+    permission: gamemode.tgbhy
+    permission message: &cTu n'a pas la permission d'éxécuter cette commande
+    description: permet de changer son mode de jeu à spectateur
+    trigger:
+        set player's game mode to spectator
+        message "Changement de ton mode de jeu à spectateur"

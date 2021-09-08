@@ -1,0 +1,5 @@
+command /broadcast:
+    aliases: /bc /alert
+    permission: bc.tgbhy
+    trigger:
+        send title from "test" with subtitle "test2" to all player for 10 seconds

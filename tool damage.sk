@@ -1,0 +1,10 @@
+on damage:
+	if attacker is a player:
+		if attacker's tool is a slimeball:
+			send "&aL'effet &cPoison &aa été apliquer !" to attacker
+		if attacker's tool is a magma cream:
+			apply slowness 1 to victim for 5 seconds
+			send "&aL'effet &cLenteur &aa été apliquer !" to attacker
+		if attacker's tool is a apple:
+			damage victim by 1 heart
+			send "&aLe joueur &c%victim% &aa perdu 2 coeurs !" to attacker

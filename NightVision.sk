@@ -1,0 +1,16 @@
+command /nightvision:
+	permission: nightvision.use
+	aliases: /nv, /vision
+	trigger:
+		if {nv.%player%} is true:
+			clear {nv.%player%}
+			send "&6[&7NightVision&6] &7Votre NightVision est désactivée."
+			remove night vision from the player
+		else:
+			set {nv.%player%} to true
+			send "&6[&7NightVision&6] &7Votre NightVision est activée."
+			apply night vision to the player for 999 days
+
+on respawn:
+	if {nv.%player%} is true:
+		apply night vision to the player for 999 days

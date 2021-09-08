@@ -1,0 +1,216 @@
+# =======================================================================
+#
+#                 CREER UN GUI 100% AVEC SKRIPT (Olyno)
+#      Publication de Olyno https://bit.ly/2RW3SDn (forum Skript-MC)
+#
+# =======================================================================
+
+options:
+    menuTitle: "&6Menu" # menu color
+    slotMachine: "&4M&ca&6c&eh&2i&an&4e &cà &6s&eo&2u&as" # Machine à sous
+
+on join:
+    set player's slot 8 to paper named {@menuTitle} # Icône menu
+if player died:
+    set player's slot 8 to paper named {@menuTitle}
+    
+# Ouverture du menu (GUI) principal en cliquant droit sur le papier dans la barre d'action
+# ----------------------------------------------------------------------------------------
+on right click:
+    if player's current hotbar slot is 8:
+        make player execute command "menu" 
+    
+# On définit les blocs indéplaçable et leurs actions
+# --------------------------------------------------
+on inventory click:
+    # =================================
+    #               MENU
+    # =================================
+
+    # Barre d'action du joueur (hotbar)
+    # ---------------------------------
+    if index of event-slot is 8: # Dernier slot
+        cancel event
+    # Menu (GUI) (on empêche tout déplacement d'item dans le menu)
+    # ------------------------------------------------------------
+    if name of event-inventory is uncolored {@menuTitle}:
+        cancel event
+    if name of event-inventory is uncolored {@slotMachine}:
+        cancel event
+    # On donne l'arc enchanté
+    # ------------------------------------------------------------
+    if name of event-inventory is uncolored {@menuTitle}:
+        if index of event-slot is 11:
+            set {_item} to event-item's type
+            set {_item}'s enchantments to event-item's enchantments
+            give {_item} to player
+            give an arrow to player
+    # On donne une pomme au joueur
+    # ----------------------------
+    if name of event-inventory is uncolored {@menuTitle}:
+        if index of event-slot is 12:
+            give an apple to player
+    # On ouvre le GUI de la Machine à sous :D
+    # ---------------------------------
+    if name of event-inventory is uncolored {@menuTitle}:
+        if index of event-slot is 14:
+            make player execute command "slotmachine"
+    # On téléporte le joueur à son home
+    # ---------------------------------
+    if name of event-inventory is uncolored {@menuTitle}:
+        if index of event-slot is 15:
+            make player execute command "home2"
+    # On ferme le menu
+    # ---------------------------------
+    if name of event-inventory is uncolored {@menuTitle}:
+        if index of event-slot is 16:
+            close player's inventory
+         
+         
+         
+    # =================================
+    #          MACHINE À SOUS
+    # =================================
+
+    # On sort de la machine à sous et on revient au menu
+    # --------------------------------------------------
+    if name of event-inventory is uncolored {@slotMachine}:
+        if index of event-slot is 0:
+            # Si une session de machine à sous est lancée, on la stoppe (on désactive la boucle en cours)
+            set metadata value "slotMachine" of player to false
+            make player execute command "menu"
+       
+    # On lance une partie de machine à sous
+    # -------------------------------------
+    if name of event-inventory is uncolored {@slotMachine}:
+        if index of event-slot is 8:
+            if metadata value "slotMachine" of player is false:
+                set metadata value "slotMachine" of player to true
+                wait 1 tick
+                make player execute command "slotmachine"
+
+command /menu:
+    trigger:
+        # On définit la valeur de la machine à sous sur false
+        # afin de stopper toutes les boucles en cours (sinon ça flingue le GUI :D)
+        # ------------------------------------------------------------------------
+        set metadata value "slotMachine" of player to false
+        
+        # On ouvre notre inventaire " Machine à sous "
+        # --------------------------------------------
+        open chest inventory with 3 row named uncolored {@menuTitle} to player
+        wait 1 tick
+        
+        # On crée un cadre de vitres noires (avec une boucle, c'est plus opti :D)
+        # -----------------------------------------------------------------------
+        set {_currentSlot} to 0
+        while {_currentSlot} < 27:
+            set slot {_currentSlot} of open inventory of player to black stained glass pane
+            increase {_currentSlot} by 1
+            if {_currentSlot} is 10:
+                set {_currentSlot} to 17
+        # On affiche le profil du joueur
+        # ------------------------------
+        set {_item} to player's skull
+        set line 1 of {_item}'s lore to "&fVie du joueur: &e%player's health%/10"
+        set line 2 of {_item}'s lore to "&fNiveau de faim: &e%player's food level%/10"
+        set slot 10 of open inventory of player to {_item} named "%player%"
+        # On crée un arc enchanté
+        # ------------------------------
+        set {_item} to bow of unbreaking 3 and power 3 and punch 1 and infinity 1 named "&6&lGuard Bow"
+        set slot 11 of open inventory of player to {_item} named "Arc magic"
+        # On crée une pomme (faut bien que le joueur mange un peu :D
+        # ----------------------------------------------------------
+        set {_apple} to "MHF_Apple" parsed as offline player
+        set slot 12 of open inventory of player to {_apple}'s skull named "&4Pomme"
+        # Une machine à sous !
+        # --------------------------------------
+        set slot 14 of open inventory of player to diamond named {@slotMachine}
+        # On crée un lit pour permettre au joueur de rentrer chez lui
+        # -----------------------------------------------------------
+        set slot 15 of open inventory of player to bed named "Home"
+        # On crée un bouton de fermeture du menu
+        # --------------------------------------
+        set slot 16 of open inventory of player to barrier
+        
+command /slotmachine:
+    trigger:
+        # On ouvre notre inventaire " Machine à sous "
+        open chest inventory with 1 row named uncolored {@slotMachine} to player
+        
+        # On permet au joueur de sortir du jeu en retournant dans le menu
+        # ---------------------------------------------------------------
+        set slot 0 of open inventory of player to iron door named "&eSortir"
+        
+        # Lumières gauches
+        # ----------------
+        set slot 1 of open inventory of player to red stained glass pane
+        set slot 2 of open inventory of player to orange stained glass pane
+        
+        
+        # Lumières droites
+        # ----------------
+        set slot 6 of open inventory of player to orange stained glass pane
+        set slot 7 of open inventory of player to red stained glass pane
+        
+        # Manette de lancement de la machine à sous
+        # -----------------------------------------
+        set slot 8 of open inventory of player to redstone torch named "Jouer"
+        
+        # Code de la machine à sous
+        # -------------------------
+        if player doesn't have metadata "slotMachine":
+            set metadata value "slotMachine" of player to false # Par défaut, le jeu est inactif
+        if metadata value "slotMachine" of player is true:
+            # On définit les items de la machine à sous
+            # -----------------------------------------
+            set {_items::*} to "iron ingot", "gold ingot" and "diamond"
+            set {_items_fr::*} to "lingot(s) de fer", "lingot(s) d'or" and "diamant(s)"
+            # Les lumières (vitres) clignotent tant que la machine à sous ne s'est pas arrêtée
+            # --------------------------------------------------------------------------------
+            loop 3 times:
+                wait 5 ticks
+                loop 15 times:
+                    wait 3 ticks
+                    loop 8 times:
+                        if metadata value "slotMachine" of player is false:
+                            stop all loops # Si on sort du GUI de la machine à sous, on stop tout
+                        if loop-value-3 is not 3, 4, 5 or 8:
+                            if type of slot loop-value-3 of open inventory of player is red stained glass pane:
+                                set slot loop-value-3 of open inventory of player to orange stained glass pane
+                            else:
+                                set slot loop-value-3 of open inventory of player to red stained glass pane
+                                
+                    # Défilement des items dans la machine à sous
+                    # -------------------------------------------
+                    if loop-value-1 is 1:
+                        set {_1st_slot} to a random element of {_items::*}
+                        set {_2nd_slot} to a random element of {_items::*}
+                        set {_3rd_slot} to a random element of {_items::*}
+                        set slot 3 of open inventory of player to "%{_1st_Slot}%" parsed as itemtype
+                        set slot 4 of open inventory of player to "%{_2nd_Slot}%" parsed as itemtype
+                        set slot 5 of open inventory of player to "%{_3rd_Slot}%" parsed as itemtype
+                    else if loop-value-1 is 2:
+                        set {_2nd_slot} to a random element of {_items::*}
+                        set {_3rd_slot} to a random element of {_items::*}
+                        set slot 4 of open inventory of player to "%{_2nd_Slot}%" parsed as itemtype
+                        set slot 5 of open inventory of player to "%{_3rd_Slot}%" parsed as itemtype
+                    else:
+                        set {_3rd_slot} to a random element of {_items::*}
+                        set slot 5 of open inventory of player to "%{_3rd_Slot}%" parsed as itemtype
+            
+            set metadata value "slotMachine" of player to false
+            set {_giftNumber} to 5
+            loop {_items::*}:
+                if {_1st_slot} and {_2nd_slot} and {_3rd_slot} are loop-value:
+                    send "&aBravo ! Vous avez gagné %{_giftNumber}% %{_items_fr::%loop-index%}%"
+                    give "%{_giftNumber}% %loop-value%" parsed as itemtype to player
+            
+command /sethome2:
+    trigger:
+        set {home.%player's uuid%} to player's location
+        send "&2Home défini !" to player
+command /home2:
+    trigger:
+        teleport player to {home.%player's uuid%}
+        send "&2Vous êtes chez vous !" to player

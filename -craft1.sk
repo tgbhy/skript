@@ -1,0 +1,10 @@
+on load:
+    register new shaped recipe for golden apple named "§n§eGolden Head" using air, gold ingot, air, gold ingot, player head, gold ingot, air, gold ingot, air
+    stop
+
+on death of player or command /tete:
+	give to player skull of victim named "&6&l&n%victim%" with lore "&7&lTu peux me changer en golden head grâce au craft." at location of victim
+
+on rightclick with golden apple named "§n§eGolden Head":
+    give effect absorption level 2 for 60 seconde to player
+    give effect regeneration level 1 for 30 seconde to player

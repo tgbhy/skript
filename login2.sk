@@ -1,0 +1,131 @@
+on join:
+	if {password.%player%} is not set:
+		send "&c[Login] Défini ton mot de passe avec /register [<password>] [<password>]"
+		clear {login.%player%}
+		set {movefalser.%player%} to true
+		stop
+	if {password.%player%} is set:
+		send "&c[Login] Connecte toi avec /login [<password>]"
+		clear {login.%player%}
+		set {movefalse.%player%} to true
+		stop
+
+on any move:
+	if {movefalser.%player%} is true:
+		cancel event
+		send "&c[Login] Défini ton mot de passe avec /register [<password>] [<password>]"
+		stop
+	if {movefalse.%player%} is true:
+		send "&c[Login] Connecte toi avec /login [<password>]"
+		cancel event
+		stop
+		
+command /register [<text>] [<text>]:
+	trigger:
+		if {password.%player%} is not set:
+			if arg 1 is set:
+				if arg 2 is set:
+					if arg 1 = arg 2:
+						set {password.%player%} to arg 1
+						send "&c[Login] &aMot de passe défini : %{password.%player%}%"
+						set {login.%player%} to true
+						clear {movefalser.%player%}
+						stop
+					else:
+						send "&c[Login] &cLes mots de passe ne sont pas identiques : %arg 1% %arg 2%"
+						send player title "&cErreur" with subtitle "&fMdp non identiques" for 2 seconds
+						stop
+				else:
+					send "&c[Login] Il faut écrire 2 fois de suite son mot de passe afin de le confirmer"
+					send "&c[Login] /register [<password>] [<password>]"
+					send player title "&cErreur" with subtitle "&f/register [<password>] [<password>]" for 2 seconds
+					stop
+			else:
+				send "&c[Login] Syntaxe: /register [<password>] [<password>]"
+				send player title "&cErreur" with subtitle "&f/register [<password>] [<password>]" for 2 seconds
+				stop
+		else:
+			send "&c[Login] &aTu es déjà enregistré. Pour changer de mot de passe fais /changePassword"
+			stop
+			
+command /login [<text>]:
+	trigger:
+		if {login.%player%} is true:
+			send "&c[Login] Tu es déjà login. Pour changer de Password fais /changePassword"
+			stop
+		if {login.%player%} is not set:
+			if arg 1 is set:
+				if arg 1 = {password.%player%}:
+					send "&c[Login] &aConnection réussie"
+					set {login.%player%} to true
+					clear {movefalse.%player%}
+					stop
+				else:
+					send "&c[Login] &cMauvais mot de passe"
+					send title from "&cErreur" with subtitle "&fMauvais mot de passe" for 2 seconds
+					stop
+			if arg 1 is not set:
+				send "&c[Login] Syntaxe : /login [<password>]"
+				stop
+
+command /showpassword [<offline player>]:
+	permission: show.pass
+	permission message: &cTu ne peux pas voir les mots de passe des autres joueurs
+	trigger:
+		if arg 1 is set:
+			if {password.%arg 1%} is set:
+				send "&c[Login] &6Password de %arg 1% : &f%{password.%arg 1%}%"
+				stop
+			if {password.%arg 1%} is not set:
+				send "&c[Login] Erreur : Le joueur n'est jamais venu/ne s'est jamais enregistré !"
+				stop
+		if arg 1 is not set:
+			send "&c[Login] Syntaxe : /showpassword [<player>]"
+
+command /changePassword [<text>] [<text>] [<offline player>]:
+	trigger:
+		if {password.%player%} is set:
+			if {login.%player%} is not set:
+				send "&c[Login] : Tu n'es pas login !"
+				stop
+			else:
+				if arg 1 is set:
+					if arg 2 is set:
+						if arg 3 is not set:
+							if arg 1 = arg 2:
+								set {password.%player%} to arg 1
+								send "&c[Login] &aMot de passe redéfini : %{password.%player%}%"
+								stop
+							else:
+								send "&c[Login] Il faut écrire 2 fois de suite son mot de passe afin de le confirmer"
+								send "&c[Login] /changePassword [<password>] [<password>]"
+								stop
+						if arg 3 is set:
+							if player has permission "Passwordother.change":
+								if arg 1 = arg 2:
+									set {password.%arg 3%} to arg 1
+									send "&c[Login] &aMot de passe redéfini pour %arg 3%: %{password.%player%}%"
+									stop
+								else:
+									send "&c[Login] Les mots de passe ne sont pas identiques : %arg 1% %arg 2%"
+									send "&c[Login] /changePassword [<password>] [<password>] [<offline player>]"
+									stop
+							else:
+								send "&c[Login] Tu ne peux pas changer le password des autres joueurs"
+								stop
+					if arg 2 is not set:
+						send "&c[Login] Il faut écrire 2 fois de suite son mot de passe afin de le confirmer"
+						send "&c[Login] /changePassword [<password>] [<password>] [<offline player>]"
+						stop
+				if arg 1 is not set:
+					send "&c[Login] Syntaxe : /changePassword [<password>] [<password>]"
+					stop
+			if {password.%player%} is not set:
+				send "&c[Login] Votre mot de passe n'est pas défini"
+				send "&c[Login] /register [<password>] [<password>]"
+				stop
+
+on command:
+	if {login.%player%} is not set:
+		full command is not "login" or "register"
+		send "&c[Login] Tu n'es pas connecté !"

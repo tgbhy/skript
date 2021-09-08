@@ -1,0 +1,9 @@
+command /teamspeak:
+    description: Cette commande permet d'avoir le teamspeak du serveur.
+    trigger:
+        message "§eCubex§fland &8»Le serveur n'a pas encore de serveur teamspeak."
+command /ts:
+    description: Cette commande permet d'avoir le teamspeak du serveur.
+    trigger:
+        message "§eCubex§fland &8»Le serveur n'a pas encore de serveur teamspeak."
+

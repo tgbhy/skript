@@ -1,0 +1,7 @@
+on rightclick with player head:
+    if player don't have 4 golden ingot:
+        message "Il te faut 4 d'or pour transformer cette tête en pomme d'or"
+        stop
+    give golden apple to player
+    make console execute "/clear %player% skull 1"
+    make console execute "/clear %player% gold_ingot 4"

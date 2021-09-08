@@ -1,0 +1,6 @@
+#Pour avoir le discord
+
+command /discord:
+    description: Cette commande permet d'avoir le discord du serveur
+    trigger:
+        message "§eCubex§fSumo &8» &9Discord : &6discord.io/cubexland"

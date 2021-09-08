@@ -1,0 +1,51 @@
+command /guislot [<number>]:
+	trigger:
+		set {current.slot} to 0
+		send "Attention, la commande peux prendre du temps à s'éxécuter, et aussi ne faite pas attention au 'and'"
+		if args 1 is not set:
+			loop 5 time:
+				add {current.slot} to {slot::*}
+				add 1 to {current.slot}
+				add {current.slot} to {slot::*}
+				add 1 to {current.slot}
+				add {current.slot} to {slot::*}
+				add 1 to {current.slot}
+				add {current.slot} to {slot::*}
+				add 1 to {current.slot}
+				add {current.slot} to {slot::*}
+				add 1 to {current.slot}
+				add {current.slot} to {slot::*}
+				add 1 to {current.slot}
+				add {current.slot} to {slot::*}
+				add 1 to {current.slot}
+				add {current.slot} to {slot::*}
+				add 1 to {current.slot}
+				add {current.slot} to {slot::*}
+				add 1 to {current.slot}
+				send "%{slot::*}%"
+				clear {slot::*}
+		else:
+			if args 1 is a number:
+				loop args 1 time:
+					add {current.slot} to {slot::*}
+					add 1 to {current.slot}
+					add {current.slot} to {slot::*}
+					add 1 to {current.slot}
+					add {current.slot} to {slot::*}
+					add 1 to {current.slot}
+					add {current.slot} to {slot::*}
+					add 1 to {current.slot}
+					add {current.slot} to {slot::*}
+					add 1 to {current.slot}
+					add {current.slot} to {slot::*}
+					add 1 to {current.slot}
+					add {current.slot} to {slot::*}
+					add 1 to {current.slot}
+					add {current.slot} to {slot::*}
+					add 1 to {current.slot}
+					add {current.slot} to {slot::*}
+					add 1 to {current.slot}
+					send "%{slot::*}%"
+					clear {slot::*}
+			else:
+				send "&cERREUR: L'argument n'es pas un nombre !"

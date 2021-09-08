@@ -1,0 +1,10 @@
+options:
+	prefix: &0[&cBROADCAST&0] &r
+
+command /broadcast [<text>]:
+	aliases: /bc
+	trigger:
+		if args 1 is set:
+			broadcast "{@prefix}%args 1%"
+		else:
+			send "Merci de mettre le message à envoyer !"

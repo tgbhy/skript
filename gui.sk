@@ -1,0 +1,12 @@
+command /gui-test:
+	executable by: players and console
+	trigger:
+		set {_gui} to a new chest inventory with 5 row with name "&cTest GUI"
+		set {_currentslot} to 0
+		while {_currentslot} < 45:
+			set slot {_currentslot} of {_gui} to a black stained glass pane
+		open {_gui} to player
+
+
+on inventory click:
+	

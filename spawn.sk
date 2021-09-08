@@ -1,0 +1,12 @@
+command /spawn:
+    trigger:
+        if {spawn.tgbhy} doesn't exist:
+            send "Spawn indisponible !"
+            stop
+        teleport player to {spawn.tgbhy}
+
+command /setspawn:
+    permission: Admin
+    trigger:
+        set {spawn.tgbhy} to player's location
+        send "&aLe spawn est correctement plaçé a votre position soit %{spawn.tgbhy}%"

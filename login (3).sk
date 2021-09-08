@@ -1,0 +1,56 @@
+options:
+	prefix: &0[&eLOGIN&0] &r
+
+command /register [<text>] [<text>]:
+	trigger:
+		if {login.%player%} is true:
+			send "{@prefix} &cVous êtes déjà login !"
+		else if {login.%player%.password} is set:
+			send "{@prefix} &a/login &eVotreMotDePasse"
+		else:
+			if args 1 is set:
+				if args 2 is set:
+					if args 1 = args 2:
+						set {login.%player%.password} to args 2
+					else:
+						send "{@prefix} &cLes deux mot de passe ne sont pas les même !"
+				else:
+					send "{@prefix} &cMerci de répétter le mot de passe !"
+			else:
+				send "{@prefix} &cMerci de mettre un mot de passe !"
+
+command /login [<text>]:
+	trigger:
+		if {login.%player%} is true:
+			send "{@prefix} &cVous êtes déjà connecté !"
+		else:
+			if {login.%player%.password} is set:
+				if args 1 = {login.%player%.password}:
+					set {login.%player%} to true
+					send "{@prefix} &eVous êtes connecté !"
+				else:
+					send "{@prefix} &cMot de passe incorect !"
+			else:
+				send "{@prefix} &e/register (mot de passe) (mot de passe)"
+
+command /resetpasswd [<offline player>]:
+	permission: login.reset
+	permission message: {@prefix} &cVous n'avez pas la permission d'éxécuter cette commande !
+	trigger:
+		if args 1 is set:
+			if args 1 is a player:
+				reset {login.%args 1%}
+				send "{@prefix} &eLe mot de passe de %args 1% à été reset !"
+			else:
+				send "{@prefix} &cLe joueur n'éxiste pas !"
+		else:
+			send "{@prefix} &cMerci de mettre le joueur au quel il faut reset le mot de passe !"
+
+on join:
+	if {login.%player%.password} is set:
+		send "{@prefix} &a/login &eVotreMotDePasse"
+
+on any move:
+	if {login.%player%} is false:
+		cancel event
+		send "{@prefix} &a/login &VotreMotDePasse"

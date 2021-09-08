@@ -1,0 +1,10 @@
+command /cleartest <text>:
+    permission: {clear.este}
+    permission message: &cVous n'avez pas la permission d'éxécuter cette commande.
+    executable by: players and console
+    trigger:
+        if don't have args 1:
+            clear player's inventory
+            message "Ton inventaire a été clear."
+        clear args 1's inventory
+        message "L'inventaire de %args 1% a été clear."
