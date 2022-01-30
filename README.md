@@ -10,4 +10,8 @@ Hello, here is all of my skripts, you can use it, you don't need to mention me (
 
 HELP:
 
+Français:
+J'ai utilisé beaucoup de chaîne youtube pour m'aider, pour l'éditeur j'ai utilisé VSCode ou Notepad++.
+
+English:
 I use many youtube channel to help me, for the editor I use VSCode or Notepad++.
