@@ -1,0 +1,107 @@
+#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------Dev par: tgbhy----------------------------------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+options:
+    cubex: §eCubex§fFFAHika &0
+    helpmessage: §eCubex§fLand &0 &eCommande inconnue: Fait /help
+
+command /ffahika [<text>]:
+    trigger:
+        if args 1 is set:
+            if args 1 is "join" or "jouer" or "rejoindre":
+                set {_position::*} to {base1.cubex}, {base2.cubex}, {base3.cubex}, {base4.cubex}, {base5.cubex}, {base6.cubex}, {base7.cubex}, {base8.cubex}, {base9.cubex}, {base10.cubex}, {base11.cubex} and {base12.cubex}
+                teleport player to random element of {_position::*}
+                set {ffahika.play.cubex} to true
+                give iron sword of sharpness 1 to player
+                give iron pickaxe of efficiency 5 to player
+                equip player with iron helmet of protection 1
+                equip player with chainmail chesplate of protection 2
+                equip player with iron leggings of protection 2
+                equip player with chainmail boots of protection 1
+            if args 1 is "leave" or "quitter":
+                if {ffahika.play.cubex} is false:
+                    if {ffahika.pvp.cubex} is true:
+                        message "{@cubex} &cAttend moin de 10 seconde pour continuer."
+                    else:
+                        set {ffahika.play.cubex} to false
+                        clear player's inventory
+                        teleport player to {ffahika.spawn.cubex}
+            if args 1 is "credits"
+                message "&6----------------------------------------------------------------------------------------------------"
+                message "{@cubex} &cLe dev à été dev par tgbhy (j'aime leou rouge :))."
+                message "&6----------------------------------------------------------------------------------------------------"
+        else:
+            message "&6----------------------------------------------------------------------------------------------------"
+            message "&c/ffahika <join/jouer/rejoindre>: permet de rejoidnre le jeux."
+            message "&c/ffahika <leave/quitter>: permet de quitter le jeux."
+            message "&c/ffahika <credits>: permet d'avoirs les crédits de ce jeux."
+            message "&6----------------------------------------------------------------------------------------------------""
+#on fait rejoindre le joueur a la partie
+command /setbasehika <number>:
+    permission: setbase.hika
+    permission message: {@helpmessage}
+    trigger:
+        if args 1 is set:
+            if args 1 >= 12:
+                message "{@cubex} &cIl ne peut pas avoir plus de 12 bases !"
+            else:
+                set {base%args 1%.cubex} to player location
+#on set les bases pour le tp
+                
+#On verifie si je joueur respecte la limite de hauteur !
+on place sandstone:
+    if player is on world "FFAHikaBrain":
+        if y-coordinate of event-block >= 52:
+            cancel event
+            send "{@cubex} Tu ne peut pas construire au dessus de cette hauteur !"
+#on verifie quand le joueur prend des dégats
+on take damage:
+    if {ffahika.play.cubex} is false:
+        cancel event
+    else:   
+        set {ffahika.pvp.cubex} to true
+        wait 10 seconds
+        set {ffahika.pvp.cubex} to false
+
+#on desactive le mode jeux pour le joueur qui se déconecte
+on leave:
+    if {ffahika.play.cubex} is true:
+        set {ffahika.play.cubex} to false
+    if {ffahika.pvp.cubex} is true:
+        make console command tempban %player% 10m Déco Combat
+
+on destroy block:
+    if player is on world "FFAHikaBrain":
+        if block is obsidian or 
+
+command /ffahikasetspawn:
+    permission: ffahikasetspawn.cubex
+    permission message: {@helpmessage}
+    trigger:
+        message "{@cubex} &eLe spawn du ffahika va etre set dans 5 secondes ! &c(Ne bouger pas !)"
+        set {ffahikasetspawn.%player%} to true
+        wait 1 second
+        if {ffahikasetspawn.%player%} is false:
+            stop
+        else:
+            wait 1 second
+            if {ffahikasetspawn.%player%} is false:
+                stop
+            else:
+                wait 1 second
+                if {ffahikasetspawn.%player%} is false:
+                    stop
+                else:
+                    wait 1 second 
+                    if {ffahikasetspawn.%player%} is false:
+                        stop
+                    else:
+                        wait 1 second
+                        set {ffahika.spawn} to player's location
+                        message "{@cubex} &eLe spawn à été set !"
+            
+on move:
+    if {ffahikasetspawn.%player%} is true:
+        set {ffahikasetspawn.%player%} to false
+        message "{@cubex} &eLe set spawn à été annulée !"
+        
