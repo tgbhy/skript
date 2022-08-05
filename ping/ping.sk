@@ -1,0 +1,3 @@
+command /ping:
+    trigger:
+        send "Pong ! Tu a %ping of player% ms. Le tps du serveur est de %tps%"
