@@ -1,6 +1,0 @@
-command /help:
-    trigger:
-        message "§aListe des commande:"
-        message "§b/gm (0;1;2;3) : permet de changer son mode de jeu"
-        message "§b/maintenance : permet de changer la maintenance du serveur"
-        message "§b/discord : permet d'avoir le discord du serveur"
