@@ -1,0 +1,60 @@
+options:
+	Logo: &4{&6tgbhy's dev&4}
+	
+	maintenancePerm: tgbhy.maintenace
+	maintenancePermActive: tgbhy.maintenace.active
+	maintenancePermUnactive: tgbhy.maintenace.unactive
+	maintenacePermBypass: tgbhy.maintenace.bypass
+	
+	maintenanceKickMessage: &cCe serveur est actuellement en maintance, merci de rééssayer plus tard !
+	
+	maintenanceActiveMessage: &aTu as activer la maintenance pour ce serveur !
+	maintenanceUnactiveMessage: &aTu as désactiver la maintenance pour ce serveur !
+
+	maintenanceActiveMessageDisplay: true
+	maintenanceUnactiveMessageDisplay: true
+
+	maintenanceChangeMOTDActive: true
+	maintenanceChangeMOTDUnactive: true
+	maintenanceMOTDActive: §4Ce serveur est actuellement en maintenance !
+	maintenanceMOTDUnactive: §4Ce serveur est actuellement ouvert !
+
+	maintenanceCommandAliases: /mtn
+	maintenanceCommandDescription: Cette commande permet de changer le status de la maintenance !
+	maintenanceCommandNoPermMessage: &cTu n'as pas la permission d'éxécuter cette commande !
+	maintenanceCommandUsage: &cSyntaxe: /maintenance <true/false>
+
+	maintenanceKickAllPlayerWithoutPermWhenActive: true
+
+on load:
+	if {@maintenanceActiveMessageDisplay} is not true or false:
+		send "&cErreur lors du chargement du skript de maintenance: l'option maintenanceActiveMessageDisplay n'est pas true ou false !" to console
+	if {@maintenanceUnactiveMessageDisplay} is not true or false:
+		send "&cErreur lors du chargement du skript de maintenance: l'option maintenanceUnactiveMessageDisplay n'est pas true ou false !" to console
+	if {@maintenanceKickAllPlayerWithoutPermWhenActive} is not true or false:
+		send "&cErreur lors du chargement du skript de maintenance: l'option maintenanceKickAllPlayerWithoutPermWhenActive n'est pas true ou false !" to console
+	if {@maintenanceChangeMOTDActive} is not true or false:
+		send "&cErreur lors du chargement du skript de maintenance: l'option maintenanceChangeMOTDActive n'est pas true ou false !" to console
+	if {@maintenanceChangeMOTDUnactive} is not true or false:
+		send "&cErreur lors du chargement du skript de maintenance: l'option maintenanceChangeMOTDUnactive n'est pas true ou false !" to console
+
+command /maintenance <boolean>:
+	permission: {@maintenancePerm}
+	permission message: {@maintenanceCommandNoPermMessage}
+	description: {@maintenanceCommandDescription}
+	usage: {@maintenanceCommandUsage}
+	aliases: {@maintenanceCommandAliases}
+	trigger:
+		if arg 1 is true:
+			set {tgbhy.maintenance} to true
+			set {motd} to {@maintenanceMOTDActive} if {@maintenanceChangeMOTDActive} is true
+			send "{@maintenanceActiveMessage}" to player if {@maintenanceActiveMessageDisplay} is true
+			if {@maintenanceKickAllPlayerWithoutPermWhenActive}:
+				loop all players:
+					if loop-player doesn't has permission "{@maintenancePermBypass}":
+						kick player due to "{@Logo} {@maintenanceKickMessage}"
+		else:
+			set {tgbhy.maintenance} to false
+			set {motd} to {@maintenanceMOTDUnactive} if {@maintenanceChangeMOTDUnactive} is true
+			send "{@maintenanceUnactiveMessage}" to player if {@maintenanceUnactiveMessageDisplay} is true
+		stop
