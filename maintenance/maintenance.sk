@@ -1,3 +1,10 @@
+# ##################################
+# Skript de maintenance par tgbhy / Skript maintenance by tgbhy
+# 
+# 
+# Le skript est complètement personnalisable dans les options / This skript is full customisable in options
+# ##################################
+
 options:
 	Logo: &4{&6tgbhy's dev&4}
 	
