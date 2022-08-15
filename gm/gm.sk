@@ -7,7 +7,7 @@
 
 options:
 	# Logo personnalisable / Custom Logo
-	Logo: &4[&6tgbhy's dev&4]
+	Logo: &4{&6tgbhy's dev&4}
 	
 	# Permission personnalisable / Custom permissions
 	gmPerm: gm.command
@@ -31,6 +31,7 @@ options:
 	gmChangeOtherToOtherDisplay: true
 	
 	# Erreurs / Error 
+	gmNotArgNotSet: &cVeuillez spécifier le mode de jeu !
 	gmNoPermMessage: &cVous n'avez pas la permission d'éxécuter cette commande
 	gmsNoPermMessage: &cVous n'avez pas la permission d'éxécuter cette commande
 	gmcNoPermMessage: &cVous n'avez pas la permission d'éxécuter cette commande
@@ -86,18 +87,25 @@ on load:
 # Fonction / Functions
 # ##################
 
-function tgbhy_gamemode_switch(player: player, staff: player, gamemode: text, DisplayMessage: boolean):
+function tgbhy_gamemode_switch(player: player, staff: player, gamemode: text):
 	if {_listSupportMode::*} contains {_gamemode}:
 		set {_player}'s game mode to {_gamemode}
 		if {_player} is {_staff}:
-			send "{@Logo} {@gmChangeMe}" to {_player} if {@gmChangeMeDisplay} is true
-		else if {_player} is not {_staff}:
-			send "{@Logo} {@gmChangeOtherToPlayer}" to {_player} if {@gmChangeOtherToPlayerDisplay} is true
-			send "{@Logo} {@gmChangeOtherToOther}" to {_staff} if {@gmChangeOtherToOtherDisplay} is true
+			tgbhy_gamemode_send({_player}, {_staff}, {_gamemode})
+			stop
 	else:
-		send "{@Logo} {@gmModeNotExist}" to {_player} if {@gmModeNotExist} is true
+		send "{@Logo} {@gmModeNotExist}" to {_player} if {@gmModeNotExistDisplay} is true
 	stop
 
+function tgbhy_gamemode_send(player: player, staff: player, gamemode: text):
+	if {@gmModeNotExistDisplay} is true:
+		send "{@Logo} {@gmChangeMe}" to {_player}
+	if {@gmChangeOtherToPlayerDisplay} is true:
+		set {_msg} to {@gmChangeOtherToOtherDisplay}
+		send "{@Logo} {_msg}" to {_player}
+	if {@gmChangeOtherToOtherDisplay} is true:
+		send "{@Logo} {@gmChangeOtherToOther}" to {_staff}
+	stop
 # #####################################
 # Fin des fonctions / End of functions
 # #####################################
@@ -111,98 +119,93 @@ command /gm [<text>] [<player>]:
     permission: {@gmPerm}
     permission message: {@gmNoPermMessage}
     usage: {@gmUsage}
-	aliases: {@gmAliases}
+    aliases: {@gmAliases}
     trigger:
+        if arg 1 is not set:
+            send "{@Logo} {@gmNotArgNotSet}" to player
+            stop
         if arg 2 is set:
-			if player has permission "{@gmOtherPerm}":
-				if arg 2 doesn't exist:
-					send "{@Logo} {@gmPlayerDoesntExist}" to player if {@gmPlayerDoesntExistDisplay} is true
-					stop
-			set {_player} to arg 2 
-		set {_player} to player if {_player} is not set
+            if player has permission "{@gmOtherPerm}":
+                if arg 2 doesn't exist:
+                    send "{@Logo} {@gmPlayerDoesntExist}" to player if {@gmPlayerDoesntExistDisplay} is true
+                    stop
+            set {_player} to arg 2 
+        set {_player} to player if {_player} is not set
 		
-		if {_listSupportMode::*} contains arg 1:
-			set {_gamemode} to creative if {_listModeCreative::*} contains arg 1
-			set {_gamemode} to survival if {_listModeSurvival::*} contains arg 1
-			set {_gamemode} to adventure if {_listModeAdventure::*} contains arg 1
-			set {_gamemode} to spectator if {_listModeSpectator::*} contains arg 1
-			tgbhy_gamemode_switch({_player}, player, {_gamemode}, {@gmDisplayMessage})
-			stop
-		else:
-			send "{@Logo} {@gmNotExistMessage}" to player if {@gmNotExistMessageDisplay} is true
-			stop
+        if {_listSupportMode::*} contains arg 1:
+            tgbhy_gamemode_switch({_player}, player, arg 1)
+            stop
+        else:
+            send "{@Logo} {@gmNotExistMessage}" to player if {@gmNotExistMessageDisplay} is true
+            stop
 		
 command /gmc <player>:
     permission: {@gmcPerm}
-	permission message: {@gmNoPermMessage}
+    permission message: {@gmNoPermMessage}
     description: {@gmcDescription}
-	usage: {@gmcUsage}
-	aliases: {@gmcAliases}
+    usage: {@gmcUsage}
+    aliases: {@gmcAliases}
     trigger:
         if arg 1 is set:
-			if player has permission "{@gmOtherPerm}":
-				if arg 1 doesn't exist:
-					send "{@gmPlayerDoesntExist}" to player if {@gmPlayerDoesntExistDisplay} is true
-					stop
-				set {_player} to arg 1
-		
-		set {_player} to player if {_player} is not set
-		tgbhy_gamemode_switch({_player}, player, "creative", {@gmDisplayMessage})
-		stop
+            if player has permission "{@gmOtherPerm}":
+                if arg 1 doesn't exist:
+                    send "{@gmPlayerDoesntExist}" to player if {@gmPlayerDoesntExistDisplay} is true
+                    stop
+                set {_player} to arg 1
+        set {_player} to player if {_player} is not set
+        tgbhy_gamemode_switch({_player}, player, "creative")
+        stop
 				
-command /gma:
+command /gma <player>:
     permission: {@gmaPerm}
-	permission message: {@gmaNoPermMessage}
-	description: {@gmaDescription}
-	usage: {@gmaUsage}
-	aliases: {@gmaAliases}
+    permission message: {@gmaNoPermMessage}
+    description: {@gmaDescription}
+    usage: {@gmaUsage}
+    aliases: {@gmaAliases}
     trigger:
         if arg 1 is set:
-			if player has permission "{@gmOtherPerm}":
-				if arg 1 doesn't exist:
-					send "{@gmPlayerDoesntExist}" to player if {@gmPlayerDoesntExistDisplay} is true
-					stop
-				set {_player} to arg 1
-		
-		set {_player} to player if {_player} is not set
-		tgbhy_gamemode_switch({_player}, player, "adventure", {@gmDisplayMessage})
-		stop
+            if player has permission "{@gmOtherPerm}":
+                if arg 1 doesn't exist:
+                    send "{@gmPlayerDoesntExist}" to player if {@gmPlayerDoesntExistDisplay} is true
+                    stop
+                set {_player} to arg 1
+        set {_player} to player if {_player} is not set
+        tgbhy_gamemode_switch({_player}, player, "adventure")
+        stop
 
-command /gms:
+command /gms <player>:
     permission: {@gmsPerm}
-	permission message: {@gmsNoPermMessage}
-	description: {@gmsDescription}
-	usage: {@gmsUsage}
-	aliases: {@gmsAliases}
+    permission message: {@gmsNoPermMessage}
+    description: {@gmsDescription}
+    usage: {@gmsUsage}
+    aliases: {@gmsAliases}
     trigger:
         if arg 1 is set:
-			if player has permission "{@gmOtherPerm}":
-				if arg 1 doesn't exist:
-					send "{@gmPlayerDoesntExist}" to player if {@gmPlayerDoesntExistDisplay} is true
-					stop
-				set {_player} to arg 1
-		
-		set {_player} to player if {_player} is not set
-		tgbhy_gamemode_switch({_player}, player, "survival", {@gmDisplayMessage})
-		stop
+            if player has permission "{@gmOtherPerm}":
+                if arg 1 doesn't exist:
+                    send "{@gmPlayerDoesntExist}" to player if {@gmPlayerDoesntExistDisplay} is true
+                    stop
+                set {_player} to arg 1
+        set {_player} to player if {_player} is not set
+        tgbhy_gamemode_switch({_player}, player, "survival")
+        stop
 
-command /gmsp:
+command /gmsp <player>:
     permission: {@gmspPerm}
-	permission message: {@gmspNoPermMessage}
-	description: {@gmspDescription}
-	usage: {@gmspUsage}
-	aliases: {@gmspAliases}
+    permission message: {@gmspNoPermMessage}
+    description: {@gmspDescription}
+    usage: {@gmspUsage}
+    aliases: {@gmspAliases}
     trigger:
         if arg 1 is set:
-			if player has permission "{@gmOtherPerm}":
-				if arg 1 doesn't exist:
-					send "{@gmPlayerDoesntExist}" to player if {@gmPlayerDoesntExistDisplay} is true
-					stop
-				set {_player} to arg 1
-		
-		set {_player} to player if {_player} is not set
-		tgbhy_gamemode_switch({_player}, player, "spectator", {@gmDisplayMessage})
-		stop
+            if player has permission "{@gmOtherPerm}":
+                if arg 1 doesn't exist:
+                    send "{@gmPlayerDoesntExist}" to player if {@gmPlayerDoesntExistDisplay} is true
+                    stop
+                set {_player} to arg 1
+        set {_player} to player if {_player} is not set
+        tgbhy_gamemode_switch({_player}, player, "spectator")
+        stop
 		
 # ####################################
 # Fin des commandes / End of commands
