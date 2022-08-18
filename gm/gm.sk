@@ -1,0 +1,300 @@
+# ##################################
+# Skript GM par tgbhy / Skript GM by tgbhy
+# 
+# 
+# Le skript est complètement personnalisable dans les options / This skript is full customisable in options
+# ##################################
+
+options:
+	# Logo personnalisable / Custom Logo
+	Logo: &4{&6tgbhy's dev&4}
+	
+	# Permission personnalisable / Custom permissions
+	gmPerm: gm.command
+	gmcPerm: tgbhy.gm.command.creative
+	gmaPerm: tgbhy.gm.command.adventure
+	gmsPerm: tgbhy.gm.command.survival
+	gmspPerm: tgbhy.gm.command.spectator
+	gmOtherPerm: gm.command.other
+	
+# Messages personnalisable / Custom Messages
+	
+	# Nom des différents mode de jeu / Name of the differents game mode
+	
+	gmCreative: creatif
+	gmSurvival: survie
+	gmAdventure: aventure
+	gmSpectator: spectateur
+	
+	# Réussites / Success
+	# Variables disponibles:
+		# __logo__  &  __{_gamemode}__
+	gmChangeMe: "__logo__ &aVous avez changé votre mode de jeu pour __gamemode__"
+		# __logo__  &  __{_gamemode}__  &  _arg2__
+	gmChangeOtherToPlayer: "__logo__ &aVous avez changé le mode de jeu de __player__ à été changé à __gamemode__ !"
+		# __logo__  &  __{_staff}__  &  __{_gamemode}__
+	gmChangeOtherToOther: "__logo__ &aLe joueur __staff__ a changé votre mode de jeu en __gamemode__ !"
+	
+	# Affichage / Display
+	# 							 true/false
+	gmChangeMeDisplay: true
+	gmChangeOtherToPlayerDisplay: true
+	gmChangeOtherToOtherDisplay: true
+	
+	# Erreurs / Error 
+	gmNotArgNotSet: &cVeuillez spécifier le mode de jeu !
+	gmNoPermMessage: &cVous n'avez pas la permission d'éxécuter cette commande
+	gmsNoPermMessage: &cVous n'avez pas la permission d'éxécuter cette commande
+	gmcNoPermMessage: &cVous n'avez pas la permission d'éxécuter cette commande
+	gmaNoPermMessage: &cVous n'avez pas la permission d'éxécuter cette commande
+	gmspNoPermMessage: &cVous n'avez pas la permission d'éxécuter cette commande
+	gmNotExistMessage: &cCe mode de jeu n'existe pas !
+	gmPlayerDoesntExist: &7Erreur&f: &cCe joueur n'existe pas !
+	gmModeNotExist: &7Erreur&f: &cCe mode de jeu n'existe pas !
+	
+	# Affichage / Display
+	#						true/false
+	gmNoPermMessageDisplay: true
+	gmNotExistMessageDisplay: true
+	gmPlayerDoesntExistDisplay: true
+	gmModeNotExistDisplay: true
+	
+	# Syntaxe / Usage
+	gmUsage: &cSyntaxe: /gm <gamemode> [<joueur>]
+	gmcUsage: &cSyntaxe: /gmc [<joueur>]
+	gmsUsage: &cSyntaxe: /gms [<joueur>]
+	gmaUsage: &cSyntaxe: /gma [<joueur>]
+	gmspUsage: &cSyntaxe: /gmsp [<joueur>]
+	
+	# Descriptions
+	gmDescription: Cette commande permet de changer son mode de jeu ou le mode de jeu d'un autre joueur
+	gmcDescription: Cette commande permet de changer son mode de jeu ou le mode de jeu d'un autre joueur en créatif
+	gmsDescription: Cette commande permet de changer son mode de jeu ou le mode de jeu d'un autre joueur en survie
+	gmaDescription: Cette commande permet de changer son mode de jeu ou le mode de jeu d'un autre joueur en aventure
+	gmspDescription: Cette commande permet de changer son mode de jeu ou le mode de jeu d'un autre joueur en spectateur
+	
+	# Aliases des commandes principals / Aliases of principals commands
+	gmAliases: /gamemode
+	gmcAliases: /gamemodec
+	gmaAliases: /gamemodea
+	gmsAliases: /gamemodes
+	gmspAliases: /gamemodesp
+	
+	# Afficher les messages (true/false) / Display messages (true/false)
+	gmDisplayMessage: true
+	gmcDisplayMessage: true
+	gmsDisplayMessage: true
+	gmaDisplayMessage: true
+	gmspDisplayMessage: true
+	
+on load:
+	set {GM::ListeSupportMode::*} to "survival" and "creative" and "spectator" and "adventure" and "s" and "c" and "sp" and "a"
+	set {GM::ListModeSurvival::*} to "survival" and "survie" and "s"
+	set {GM::ListModeCreative::*} to "creative" and "creatif" and "c"
+	set {GM::ListModeAdventure::*} to "adventure" and "aventure" and "a"
+	set {GM::ListModeSpectator::*} to "spectator" and "spectateur" and "sp"
+
+# #####################
+# Commandes / Commands
+# #####################
+
+command /gm [<text>] [<player>]:
+    description: {@gmDescription}
+    permission: {@gmPerm}
+    permission message: {@gmNoPermMessage}
+    usage: {@gmUsage}
+    aliases: {@gmAliases}
+    trigger:
+        if arg 1 is not set:
+            send "{@Logo} {@gmNotArgNotSet}" to player
+            stop
+        if arg 2 is set:
+            if player has permission "{@gmOtherPerm}":
+                if arg 2 doesn't exist:
+                    send "{@Logo} {@gmPlayerDoesntExist}" to player if {@gmPlayerDoesntExistDisplay} is true
+                    stop
+            set {_player} to arg 2 
+        set {_player} to player if {_player} is not set
+		
+        if {GM::ListeSupportMode::*} contains arg 1:
+            set {_msg} to {@gmChangeMe}
+            if {_player} is not player:
+                set {_msg} to {@gmChangeOtherToPlayer}
+                set {_msg2} to {@gmChangeOtherToOther}
+            if {GM::ListModeCreative::*} contains arg 1:
+                set {_player}'s game mode to creative
+                replace all "__gamemode__" with "{@gmCreative}" in {_msg}
+			
+            if {GM::ListModeSurvival::*} contains arg 1:
+                set {_player}'s game mode to survival
+                replace all "__gamemode__" with "{@gmSurvival}" in {_msg}
+				
+            if {GM::ListModeAdventure::*} contains arg 1:
+                set {_player}'s game mode to adventure
+                replace all "__gamemode__" with "{@gmAdventure}" in {_msg}
+				
+            if {GM::ListModeSpectator::*} contains arg 1:
+                set {_player}'s game mode to spectator
+                replace all "__gamemode__" with "{@gmSpectator}" in {_msg}
+			
+            replace all "__player__" with "%{_player}%" in {_msg}
+            replace all "__staff__" with "%player%" in {_msg2} if {_player} is not player
+            replace all "__logo__" with "{@Logo}" in {_msg}
+            replace all "__logo__" with "{@Logo}" in {_msg2}
+			
+            if {_player} is player:
+                send {_msg} to player if {@gmChangeMeDisplay} is true
+            else:
+                send {_msg} to player if {@gmChangeOtherToPlayerDisplay} is true
+                send {_msg2} to {_player} if {@gmChangeOtherToOtherDisplay} is true
+        else:
+            send "{@Logo} {@gmNotExistMessage}" to player if {@gmNotExistMessageDisplay} is true
+            stop
+		
+command /gmc [<player>]:
+    permission: {@gmcPerm}
+    permission message: {@gmNoPermMessage}
+    description: {@gmcDescription}
+    usage: {@gmcUsage}
+    aliases: {@gmcAliases}
+    trigger:
+        if arg 1 is set:
+            if player has permission "{@gmOtherPerm}":
+                if arg 1 doesn't exist:
+                    send "{@gmPlayerDoesntExist}" to player if {@gmPlayerDoesntExistDisplay} is true
+                    stop
+                set {_player} to arg 1
+        set {_player} to player if {_player} is not set
+		
+        set {_msg} to {@gmChangeMe}
+        if {_player} is not player:
+            set {_msg} to {@gmChangeOtherToPlayer}
+            set {_msg2} to {@gmChangeOtherToOther}
+		
+        set {_player}'s game mode to creative
+        replace all "__gamemode__" with "{@gmCreative}" in {_msg}
+		
+        replace all "__player__" with "%{_player}%" in {_msg}
+        replace all "__staff__" with "%player%" in {_msg2} if {_player} is not player
+        replace all "__logo__" with "{@Logo}" in {_msg}
+        replace all "__logo__" with "{@Logo}" in {_msg2}
+		
+        if {_player} is player:
+            send {_msg} to player if {@gmChangeMeDisplay} is true
+        else:
+            send {_msg} to player if {@gmChangeOtherToPlayerDisplay} is true
+            send {_msg2} to {_player} if {@gmChangeOtherToOtherDisplay} is true
+		
+        stop
+				
+command /gma [<player>]:
+    permission: {@gmaPerm}
+    permission message: {@gmaNoPermMessage}
+    description: {@gmaDescription}
+    usage: {@gmaUsage}
+    aliases: {@gmaAliases}
+    trigger:
+        if arg 1 is set:
+            if player has permission "{@gmOtherPerm}":
+                if arg 1 doesn't exist:
+                    send "{@gmPlayerDoesntExist}" to player if {@gmPlayerDoesntExistDisplay} is true
+                    stop
+                set {_player} to arg 1
+        set {_player} to player if {_player} is not set
+        
+        set {_msg} to {@gmChangeMe}
+        if {_player} is not player:
+            set {_msg} to {@gmChangeOtherToPlayer}
+            set {_msg2} to {@gmChangeOtherToOther}
+		
+        set {_player}'s game mode to survival
+        replace all "__gamemode__" with "{@gmSurvival}" in {_msg}
+		
+        replace all "__player__" with "%{_player}%" in {_msg}
+        replace all "__staff__" with "%player%" in {_msg2} if {_player} is not player
+        replace all "__logo__" with "{@Logo}" in {_msg}
+        replace all "__logo__" with "{@Logo}" in {_msg2}
+		
+        if {_player} is player:
+            send {_msg} to player if {@gmChangeMeDisplay} is true
+        else:
+            send {_msg} to player if {@gmChangeOtherToPlayerDisplay} is true
+            send {_msg2} to {_player} if {@gmChangeOtherToOtherDisplay} is true
+		
+        stop
+
+command /gms [<player>]:
+    permission: {@gmsPerm}
+    permission message: {@gmsNoPermMessage}
+    description: {@gmsDescription}
+    usage: {@gmsUsage}
+    aliases: {@gmsAliases}
+    trigger:
+        if arg 1 is set:
+            if player has permission "{@gmOtherPerm}":
+                if arg 1 doesn't exist:
+                    send "{@gmPlayerDoesntExist}" to player if {@gmPlayerDoesntExistDisplay} is true
+                    stop
+                set {_player} to arg 1
+        set {_player} to player if {_player} is not set
+        
+        set {_msg} to {@gmChangeMe}
+        if {_player} is not player:
+            set {_msg} to {@gmChangeOtherToPlayer}
+            set {_msg2} to {@gmChangeOtherToOther}
+		
+        set {_player}'s game mode to survival
+        replace all "__gamemode__" with "{@gmAdventure}" in {_msg}
+		
+        replace all "__player__" with "%{_player}%" in {_msg}
+        replace all "__staff__" with "%player%" in {_msg2} if {_player} is not player
+        replace all "__logo__" with "{@Logo}" in {_msg}
+        replace all "__logo__" with "{@Logo}" in {_msg2}
+		
+        if {_player} is player:
+            send {_msg} to player if {@gmChangeMeDisplay} is true
+        else:
+            send {_msg} to player if {@gmChangeOtherToPlayerDisplay} is true
+            send {_msg2} to {_player} if {@gmChangeOtherToOtherDisplay} is true
+		
+        stop
+
+command /gmsp [<player>]:
+    permission: {@gmspPerm}
+    permission message: {@gmspNoPermMessage}
+    description: {@gmspDescription}
+    usage: {@gmspUsage}
+    aliases: {@gmspAliases}
+    trigger:
+        if arg 1 is set:
+            if player has permission "{@gmOtherPerm}":
+                if arg 1 doesn't exist:
+                    send "{@gmPlayerDoesntExist}" to player if {@gmPlayerDoesntExistDisplay} is true
+                    stop
+                set {_player} to arg 1
+        set {_player} to player if {_player} is not set
+        
+        set {_msg} to {@gmChangeMe}
+        if {_player} is not player:
+            set {_msg} to {@gmChangeOtherToPlayer}
+            set {_msg2} to {@gmChangeOtherToOther}
+		
+        set {_player}'s game mode to spectator
+        replace all "__gamemode__" with "{@gmSpectator}" in {_msg}
+		
+        replace all "__player__" with "%{_player}%" in {_msg}
+        replace all "__staff__" with "%player%" in {_msg2} if {_player} is not player
+        replace all "__logo__" with "{@Logo}" in {_msg}
+        replace all "__logo__" with "{@Logo}" in {_msg2}
+		
+        if {_player} is player:
+            send {_msg} to player if {@gmChangeMeDisplay} is true
+        else:
+            send {_msg} to player if {@gmChangeOtherToPlayerDisplay} is true
+            send {_msg2} to {_player} if {@gmChangeOtherToOtherDisplay} is true
+		
+        stop
+		
+# ####################################
+# Fin des commandes / End of commands
+# ####################################
